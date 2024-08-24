@@ -1,26 +1,52 @@
-
-let input = document.getElementById('input');
+let expressionDisplay = document.getElementById('expression');
+let resultDisplay = document.getElementById('result');
 let buttons = document.querySelectorAll('button');
 
-let string = "";
+let expression = "";
 let arr = Array.from(buttons);
 
 arr.forEach(button => {
-  button.addEventListener('click', (e) => {
-    if(e.target.innerHTML === '='){
-    
-      string = eval(string); // Evaluates the string as a mathematical expression
-      input.value = string;
-    }else if(e.target.innerHTML === 'AC') {
-      string = ''; // Clears the input
-      input.value = string;
-    } else if(e.target.innerHTML === 'DEL'){
-      string = string.slice(0, -1); // Deletes the last character
-      input.value = string;
-    } else {
-      string += e.target.innerHTML; // Appends the clicked button's text to the string
-            input.value = string; // Updates the input field with the new string
-    }
-    
-  });
+    button.addEventListener('click', (e) => {
+        let value = e.target.innerHTML;
+
+        if (value === '=') {
+            try {
+                // Automatically add a closing parenthesis if needed
+                if (expression.includes('Math.sin') || expression.includes('Math.cos') || expression.includes('Math.tan')) {
+                    expression += ')';
+                }
+                let result = eval(expression);
+                resultDisplay.value = result;
+                expression = result.toString(); // Allows further operations on the result
+            } catch (error) {
+                resultDisplay.value = "Error";
+                expression = "";
+            }
+        } else if (value === 'AC') {
+            expression = '';
+            expressionDisplay.innerHTML = '';
+            resultDisplay.value = '';
+        } else if (value === 'DEL') {
+            expression = expression.slice(0, -1);
+            expressionDisplay.innerHTML = expression;
+        } else if (value === '√') {
+            expression += '**0.5';
+            expressionDisplay.innerHTML += '√';
+        } else if (value === '^') {
+            expression += '**';
+            expressionDisplay.innerHTML += '^';
+        } else if (value === 'sin') {
+            expression += 'Math.sin(';
+            expressionDisplay.innerHTML += 'sin(';
+        } else if (value === 'cos') {
+            expression += 'Math.cos(';
+            expressionDisplay.innerHTML += 'cos(';
+        } else if (value === 'tan') {
+            expression += 'Math.tan(';
+            expressionDisplay.innerHTML += 'tan(';
+        } else {
+            expression += value;
+            expressionDisplay.innerHTML += value;
+        }
+    });
 });
